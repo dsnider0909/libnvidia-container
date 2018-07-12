@@ -134,7 +134,7 @@ LIB_LDLIBS_STATIC  += -l:libtirpc.a
 LIB_LDLIBS_SHARED  += -lpthread
 endif
 ifeq ($(WITH_SECCOMP), yes)
-LIB_CPPFLAGS       += -DWITH_SECCOMP
+LIB_CPPFLAGS       += -DWITH_SECCOMP $(shell pkg-config --silence-errors --cflags libseccomp)
 LIB_LDLIBS_SHARED  += -lseccomp
 endif
 LIB_CPPFLAGS       += $(CPPFLAGS)
