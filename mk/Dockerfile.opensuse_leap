@@ -7,14 +7,9 @@ SHELL ["/bin/bash", "-c"]
 RUN zypper install -y curl && \
     rm -rf /var/cache/zypp/*
 
-RUN distrib=opensuse${IMAGESPEC##*:} && \
-    arch=$(uname -m); distrib=${distrib//.0}; distrib=${distrib//.} && \
-    zypper -n ar http://developer.download.nvidia.com/compute/cuda/repos/${distrib}/$arch cuda && \
-    zypper --gpg-auto-import-keys install -y \
+RUN zypper --gpg-auto-import-keys install -y \
         bzip2 \
         createrepo \
-        cuda-misc-headers-10-0-10.0.130-1 \
-        cuda-nvml-dev-10-0-10.0.130-1 \
         libelf-devel \
         gcc \
         git \

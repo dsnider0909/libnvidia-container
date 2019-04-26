@@ -18,6 +18,9 @@ SVCXPRT *svcunixfd_create(int, u_int, u_int);
 
 #include "error.h"
 
+#define SONAME_LIBCUDA "libcuda.so.1"
+#define SONAME_LIBNVML "libnvidia-ml.so.1"
+
 #define SOCK_CLT 0
 #define SOCK_SVC 1
 
@@ -46,5 +49,6 @@ int driver_get_device_busid(struct driver *, struct driver_device *, char **);
 int driver_get_device_uuid(struct driver *, struct driver_device *, char **);
 int driver_get_device_arch(struct driver *, struct driver_device *, char **);
 int driver_get_device_model(struct driver *, struct driver_device *, char **);
+int driver_get_device_brand(struct driver *, struct driver_device *, char **);
 
 #endif /* HEADER_DRIVER_H */

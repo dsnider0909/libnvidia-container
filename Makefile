@@ -22,7 +22,6 @@ export libdbgdir   = $(prefix)/lib/debug$(libdir)
 export includedir  = $(prefix)/include
 export pkgconfdir  = $(libdir)/pkgconfig
 
-export CUDA_DIR    ?= /usr/local/cuda-8.0
 export PKG_DIR     ?= $(CURDIR)/pkg
 export SRCS_DIR    ?= $(CURDIR)/src
 export DEPS_DIR    ?= $(CURDIR)/deps
@@ -117,7 +116,7 @@ LDFLAGS  := -Wl,-zrelro -Wl,-znow -Wl,-zdefs -Wl,--gc-sections $(LDFLAGS)
 LDLIBS   := $(LDLIBS)
 
 # Library flags (recursively expanded to handle target-specific flags)
-LIB_CPPFLAGS       = -DNV_LINUX -isystem $(CUDA_DIR)/include -isystem $(DEPS_DIR)$(includedir) -include $(BUILD_DEFS)
+LIB_CPPFLAGS       = -DNV_LINUX -isystem $(DEPS_DIR)$(includedir) -include $(BUILD_DEFS)
 LIB_CFLAGS         = -fPIC
 LIB_LDFLAGS        = -L$(DEPS_DIR)$(libdir) -shared -Wl,-soname=$(LIB_SONAME)
 LIB_LDLIBS_STATIC  = -l:libnvidia-modprobe-utils.a
@@ -147,7 +146,7 @@ LIB_LDLIBS         = $(LIB_LDLIBS_STATIC) $(LIB_LDLIBS_SHARED)
 # Binary flags (recursively expanded to handle target-specific flags)
 BIN_CPPFLAGS       = -include $(BUILD_DEFS) $(CPPFLAGS)
 BIN_CFLAGS         = -I$(SRCS_DIR) -fPIE -flto $(CFLAGS)
-BIN_LDFLAGS        = -L. -pie $(LDFLAGS)
+BIN_LDFLAGS        = -L. -pie $(LDFLAGS) -Wl,-rpath='$$ORIGIN/../$$LIB'
 BIN_LDLIBS         = -l:$(LIB_SHARED) -lcap $(LDLIBS)
 
 $(word 1,$(LIB_RPC_SRCS)): RPCGENFLAGS=-h

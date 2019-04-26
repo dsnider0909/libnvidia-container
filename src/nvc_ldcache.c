@@ -212,7 +212,7 @@ limit_resources(struct error *err)
         limit = (struct rlimit){10, 10};
         if (setrlimit(RLIMIT_CPU, &limit) < 0)
                 goto fail;
-        limit = (struct rlimit){512*1024*1024, 512*1024*1024};
+        limit = (struct rlimit){2ull*1024*1024*1024, 2ull*1024*1024*1024};
         if (setrlimit(RLIMIT_AS, &limit) < 0)
                 goto fail;
         limit = (struct rlimit){64, 64};
@@ -245,11 +245,13 @@ limit_syscalls(struct error *err)
                 SCMP_SYS(exit),
                 SCMP_SYS(exit_group),
                 SCMP_SYS(fcntl),
+                SCMP_SYS(fdatasync),
                 SCMP_SYS(fstat),
                 SCMP_SYS(fsync),
                 SCMP_SYS(ftruncate),
                 SCMP_SYS(getcwd),
                 SCMP_SYS(getdents),
+                SCMP_SYS(getdents64),
                 SCMP_SYS(getegid),
                 SCMP_SYS(geteuid),
                 SCMP_SYS(getgid),
@@ -260,8 +262,8 @@ limit_syscalls(struct error *err)
                 SCMP_SYS(lseek),
                 SCMP_SYS(lstat),
                 SCMP_SYS(mkdir),
-                SCMP_SYS(mprotect),
                 SCMP_SYS(mmap),
+                SCMP_SYS(mprotect),
                 SCMP_SYS(mremap),
                 SCMP_SYS(munmap),
                 SCMP_SYS(newfstatat),

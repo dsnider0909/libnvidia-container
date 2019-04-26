@@ -15,8 +15,8 @@ extern "C" {
 
 #define NVC_MAJOR   1
 #define NVC_MINOR   0
-#define NVC_PATCH   0
-#define NVC_VERSION "1.0.0"
+#define NVC_PATCH   2
+#define NVC_VERSION "1.0.2"
 
 #define NVC_ARG_MAX 256
 
@@ -62,6 +62,7 @@ struct nvc_device {
         char *uuid;
         char *busid;
         char *arch;
+        char *brand;
         struct nvc_device_node node;
 };
 
@@ -76,6 +77,7 @@ struct nvc_container_config {
         char *bins_dir;
         char *libs_dir;
         char *libs32_dir;
+        char *cudart_dir;
         char *ldconfig;
 };
 

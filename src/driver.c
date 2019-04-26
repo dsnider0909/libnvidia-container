@@ -17,8 +17,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <cuda.h>
-#include <nvml.h>
+#include "cuda.h"
+#include "nvml.h"
 
 #pragma GCC diagnostic push
 #include "driver_rpc.h"
@@ -28,9 +28,6 @@
 #include "error.h"
 #include "utils.h"
 #include "xfuncs.h"
-
-#define SONAME_LIBCUDA "libcuda.so.1"
-#define SONAME_LIBNVML "libnvidia-ml.so.1"
 
 #define MAX_DEVICES     64
 #define REAP_TIMEOUT_MS 10
@@ -139,6 +136,14 @@ setup_rpc_service(struct driver *ctx, const char *root, uid_t uid, gid_t gid, pi
         xclose(ctx->fd[SOCK_CLT]);
 
         if (!str_equal(root, "/")) {
+                /* Preload glibc libraries to avoid symbols mismatch after changing root. */
+                if (xdlopen(ctx->err, "libm.so.6", RTLD_NOW) == NULL)
+                        goto fail;
+                if (xdlopen(ctx->err, "librt.so.1", RTLD_NOW) == NULL)
+                        goto fail;
+                if (xdlopen(ctx->err, "libpthread.so.0", RTLD_NOW) == NULL)
+                        goto fail;
+
                 if (chroot(root) < 0 || chdir("/") < 0) {
                         error_set(ctx->err, "change root failed");
                         goto fail;
@@ -617,6 +622,65 @@ driver_get_device_model_1_svc(ptr_t ctxptr, ptr_t dev, driver_get_device_model_r
         if (call_nvml(ctx, nvmlDeviceGetName, handle->nvml, buf, sizeof(buf)) < 0)
                 goto fail;
         if ((res->driver_get_device_model_res_u.model = xstrdup(ctx->err, buf)) == NULL)
+                goto fail;
+        return (true);
+
+ fail:
+        error_to_xdr(ctx->err, res);
+        return (true);
+}
+
+int
+driver_get_device_brand(struct driver *ctx, struct driver_device *dev, char **brand)
+{
+        struct driver_get_device_brand_res res = {0};
+        int rv = -1;
+
+        if (call_rpc(ctx, &res, driver_get_device_brand_1, (ptr_t)dev) < 0)
+                goto fail;
+        if ((*brand = xstrdup(ctx->err, res.driver_get_device_brand_res_u.brand)) == NULL)
+                goto fail;
+        rv = 0;
+
+ fail:
+        xdr_free((xdrproc_t)xdr_driver_get_device_brand_res, (caddr_t)&res);
+        return (rv);
+}
+
+bool_t
+driver_get_device_brand_1_svc(ptr_t ctxptr, ptr_t dev, driver_get_device_brand_res *res, maybe_unused struct svc_req *req)
+{
+        struct driver *ctx = (struct driver *)ctxptr;
+        struct driver_device *handle = (struct driver_device *)dev;
+        nvmlBrandType_t brand;
+        const char *buf;
+
+        memset(res, 0, sizeof(*res));
+        if (call_nvml(ctx, nvmlDeviceGetBrand, handle->nvml, &brand) < 0)
+                goto fail;
+        switch (brand) {
+        case NVML_BRAND_QUADRO:
+                buf = "Quadro";
+                break;
+        case NVML_BRAND_TESLA:
+                buf = "Tesla";
+                break;
+        case NVML_BRAND_NVS:
+                buf = "NVS";
+                break;
+        case NVML_BRAND_GRID:
+                buf = "GRID";
+                break;
+        case NVML_BRAND_GEFORCE:
+                buf = "GeForce";
+                break;
+        case NVML_BRAND_TITAN:
+                buf = "TITAN";
+                break;
+        default:
+                buf = "Unknown";
+        }
+        if ((res->driver_get_device_brand_res_u.brand = xstrdup(ctx->err, buf)) == NULL)
                 goto fail;
         return (true);
 
