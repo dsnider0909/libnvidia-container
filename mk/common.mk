@@ -21,7 +21,7 @@ DOCKER   ?= docker
 UID      := $(shell id -u)
 GID      := $(shell id -g)
 DATE     := $(shell date -u --iso-8601=minutes)
-REVISION := $(shell git rev-parse HEAD)
+REVISION := $(shell [ -d $(CURDIR)/.git ] && git rev-parse HEAD ||  echo "${RPM_PACKAGE_VERSION}")
 COMPILER := $(realpath $(shell which $(CC)))
 PLATFORM ?= $(shell uname -m)
 
