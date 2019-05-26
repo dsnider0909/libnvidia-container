@@ -11,6 +11,7 @@ PREFIX         := nvidia-modprobe-$(VERSION)
 URL            := https://github.com/NVIDIA/nvidia-modprobe/archive/$(VERSION).tar.gz
 
 SRCS_DIR       := $(DEPS_DIR)/src/$(PREFIX)
+IMPORT_DIR     := $(CURDIR)/import
 MODPROBE_UTILS := $(SRCS_DIR)/modprobe-utils
 
 LIB_STATIC     := $(MODPROBE_UTILS)/libnvidia-modprobe-utils.a
@@ -29,9 +30,17 @@ CFLAGS   := -O2 -g -fdata-sections -ffunction-sections -fstack-protector -fno-st
 
 LIB_OBJS := $(LIB_SRCS:.c=.o)
 
-$(SRCS_DIR)/.download_stamp:
+$(IMPORT_DIR)/nvidia-modprobe-$(VERSION).tar.gz:
+	echo "downloading: " $(URL)
+	mkdir -p $(IMPORT_DIR)
+	$(CURL) --progress-bar -fSL $(URL) -o $@
+
+$(SRCS_DIR)/.download_stamp: $(IMPORT_DIR)/nvidia-modprobe-$(VERSION).tar.gz
+	echo 'modprobe-utils  SRC_DIR:' $(SRCS_DIR)
+	echo $(CURDIR) " " $(MAKE_DIR)
+	pwd
 	$(MKDIR) -p $(SRCS_DIR)
-	$(CURL) --progress-bar -fSL $(URL) | \
+	cat $(IMPORT_DIR)/nvidia-modprobe-$(VERSION).tar.gz | \
 	$(TAR) -C $(SRCS_DIR) --strip-components=1 -xz $(PREFIX)/modprobe-utils
 	@touch $@
 
