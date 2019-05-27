@@ -1,5 +1,5 @@
 Name: libnvidia-container
-License: BSD
+License: BSD-3-Clause
 Vendor: NVIDIA CORPORATION
 Packager: NVIDIA CORPORATION <cudatools@nvidia.com>
 URL: https://github.com/NVIDIA/libnvidia-container
@@ -7,6 +7,7 @@ BuildRequires: make
 Version: %{_version}
 Release: 1%{?_tag:.%_tag}
 Summary: NVIDIA container runtime library
+Group:   System/Packages
 %description
 The nvidia-container library provides an interface to configure GNU/Linux
 containers leveraging NVIDIA hardware. The implementation relies on several
