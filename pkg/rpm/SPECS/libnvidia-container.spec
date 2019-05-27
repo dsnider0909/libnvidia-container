@@ -7,7 +7,6 @@ BuildRequires: make
 Version: %{_version}
 Release: 1%{?_tag:.%_tag}
 Summary: NVIDIA container runtime library
-Group:   System/Packages
 %description
 The nvidia-container library provides an interface to configure GNU/Linux
 containers leveraging NVIDIA hardware. The implementation relies on several
@@ -18,6 +17,7 @@ DESTDIR=%{buildroot} %{__make} install prefix=%{_prefix} exec_prefix=%{_exec_pre
 
 %package -n %{name}%{_major}
 Summary: NVIDIA container runtime library
+Group:   System/Packages
 %description -n %{name}%{_major}
 The nvidia-container library provides an interface to configure GNU/Linux
 containers leveraging NVIDIA hardware. The implementation relies on several
@@ -32,6 +32,7 @@ This package requires the NVIDIA driver (>= 340.29) to be installed separately.
 
 %package devel
 Requires: %{name}%{_major}%{?_isa} = %{version}-%{release}
+Group:   System/Packages
 Summary: NVIDIA container runtime library (development files)
 %description devel
 The nvidia-container library provides an interface to configure GNU/Linux
@@ -46,6 +47,7 @@ This package contains the files required to compile programs with the library.
 
 %package static
 Requires: %{name}-devel%{?_isa} = %{version}-%{release}
+Group:   System/Packages
 Summary: NVIDIA container runtime library (static library)
 %description static
 The nvidia-container library provides an interface to configure GNU/Linux
@@ -59,6 +61,7 @@ This package requires the NVIDIA driver (>= 340.29) to be installed separately.
 %define debug_package %{nil}
 %package -n %{name}%{_major}-debuginfo
 Requires: %{name}%{_major}%{?_isa} = %{version}-%{release}
+Group:   System/Packages
 Summary: NVIDIA container runtime library (debugging symbols)
 %description -n %{name}%{_major}-debuginfo
 The nvidia-container library provides an interface to configure GNU/Linux
@@ -71,6 +74,7 @@ This package contains the debugging symbols for the library.
 
 %package tools
 Requires: %{name}%{_major}%{?_isa} >= %{version}-1, %{name}%{_major}%{?_isa} >= %{version}-%{release}
+Group:   System/Packages
 Summary: NVIDIA container runtime library (command-line tools)
 %description tools
 The nvidia-container library provides an interface to configure GNU/Linux
