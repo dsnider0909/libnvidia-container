@@ -39,7 +39,6 @@ kernel subsystems and is designed to be agnostic of the container runtime.
 
 This package contains the files required to compile programs with the library.
 %files devel
-%license %{_licensedir}/*
 %{_includedir}/*.h
 %{_libdir}/lib*.so
 %{_libdir}/pkgconfig/*.pc
@@ -54,7 +53,6 @@ kernel subsystems and is designed to be agnostic of the container runtime.
 
 This package requires the NVIDIA driver (>= 340.29) to be installed separately.
 %files static
-%license %{_licensedir}/*
 %{_libdir}/lib*.a
 
 %define debug_package %{nil}
@@ -68,7 +66,6 @@ kernel subsystems and is designed to be agnostic of the container runtime.
 
 This package contains the debugging symbols for the library.
 %files -n %{name}%{_major}-debuginfo
-%license %{_licensedir}/*
 %{_prefix}/lib/debug%{_libdir}/lib*.so.*
 
 %package tools
@@ -81,7 +78,6 @@ kernel subsystems and is designed to be agnostic of the container runtime.
 
 This package contains command-line tools that facilitate using the library.
 %files tools
-%license %{_licensedir}/*
 %{_bindir}/*
 
 %changelog
