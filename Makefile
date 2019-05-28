@@ -226,7 +226,8 @@ ifeq ($(WITH_TIRPC), yes)
 	$(MAKE) -f $(MAKE_DIR)/libtirpc.mk install
 endif
 
-install: all
+install:
+	echo 'make install'
 	$(INSTALL) -d -m 755 $(addprefix $(DESTDIR),$(includedir) $(bindir) $(libdir) $(docdir) $(libdbgdir) $(pkgconfdir))
 	# Install header files
 	$(INSTALL) -m 644 $(LIB_INCS) $(DESTDIR)$(includedir)
